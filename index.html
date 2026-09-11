@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Order Calculator</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 950px; margin: 20px auto; padding: 15px; background: #f8f9fa; }
+        h1 { text-align: center; color: #d32f2f; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .input-panel { flex: 1; min-width: 320px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .result-panel { flex: 1; min-width: 320px; }
+        .results { display: flex; gap: 15px; flex-wrap: wrap; }
+        .card { flex: 1; min-width: 300px; background: white; padding: 18px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        label { display: block; margin: 12px 0 6px; font-weight: 600; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1.1em; }
+        .slider-container { margin: 15px 0; }
+        output { font-weight: bold; color: #d32f2f; }
+        button { background: #d32f2f; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; margin: 8px 8px 0 0; }
+        button:hover { background: #b71c1c; }
+        button.reset { background: #666; }
+        button.reset:hover { background: #444; }
+        .total { font-size: 1.35em; font-weight: bold; color: #d32f2f; margin: 12px 0; }
+        .cost { color: #2e7d32; font-size: 1.25em; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🍕 Pizza Order Calculator</h1>
+    
+    <div class="container">
+        <div class="input-panel">
+            <label>Adults & Teens</label>
+            <input type="number" id="adults" value="34" min="0">
+
+            <label>Kids</label>
+            <input type="number" id="kids" value="16" min="0">
+
+            <div class="slider-container">
+                <label>Kid slices per person: <output id="kidSlicesValue">1.75</output></label>
+                <input type="range" id="kidSlices" min="1.5" max="2" step="0.25" value="1.75">
+            </div>
+
+            <label>Slices per large pizza</label>
+            <input type="number" id="slicesPerPizza" value="8" min="6" max="12">
+
+            <div class="slider-container">
+                <label>Cheese % (rest is Pepperoni): <output id="ratioValue">60</output>%</label>
+                <input type="range" id="ratio" min="0" max="100" value="60" step="5">
+            </div>
+
+            <label>Cost per pizza ($)</label>
+            <input type="number" id="costPerPizza" value="6.50" step="0.01" min="0">
+
+            <button onclick="calculate()">Calculate</button>
+            <button onclick="resetForm()" class="reset">Reset to Defaults</button>
+        </div>
+
+        <div class="result-panel">
+            <div class="results">
+                <div class="card" id="conservative">
+                    <h2>Conservative Estimate</h2>
+                    <div id="consOutput"></div>
+                </div>
+
+                <div class="card" id="generous">
+                    <h2>Generous Estimate (+0.5 slices/kid)</h2>
+                    <div id="genOutput"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('kidSlices').addEventListener('input', function() {
+            document.getElementById('kidSlicesValue').textContent = parseFloat(this.value).toFixed(2);
+        });
+        document.getElementById('ratio').addEventListener('input', function() {
+            document.getElementById('ratioValue').textContent = this.value;
+        });
+
+        function calculate() {
+            const adults = parseFloat(document.getElementById('adults').value) || 0;
+            const kids = parseFloat(document.getElementById('kids').value) || 0;
+            const kidSlices = parseFloat(document.getElementById('kidSlices').value);
+            const slicesPerPizza = parseFloat(document.getElementById('slicesPerPizza').value) || 8;
+            const cheesePercent = parseFloat(document.getElementById('ratio').value) / 100;
+            const costPerPizza = parseFloat(document.getElementById('costPerPizza').value) || 6.50;
+
+            if (adults + kids === 0) {
+                alert("Please enter at least some attendees!");
+                return;
+            }
+
+            function compute(totalSlices) {
+                let basePizzas = totalSlices / slicesPerPizza;
+                let totalPizzas = Math.ceil(basePizzas) + 1;
+                let cheese = Math.ceil(totalPizzas * cheesePercent);
+                let pepperoni = totalPizzas - cheese;
+                let totalCost = (totalPizzas * costPerPizza).toFixed(2);
+
+                return { totalPizzas, cheese, pepperoni, basePizzas: basePizzas.toFixed(1), totalCost };
+            }
+
+            const consSlices = (adults * 2.5) + (kids * kidSlices);
+            const cons = compute(consSlices);
+
+            const genSlices = (adults * 2.5) + (kids * (kidSlices + 0.5));
+            const gen = compute(genSlices);
+
+            document.getElementById('consOutput').innerHTML = `
+                <p><strong>Attendees:</strong> ${adults} adults/teens + ${kids} kids</p>
+                <p><strong>Total slices needed:</strong> ${consSlices.toFixed(1)}</p>
+                <p><strong>Pizzas before buffer:</strong> ${cons.basePizzas}</p>
+                <div class="total">Order ${cons.totalPizzas} large pizzas</div>
+                <p><strong>Plain Cheese:</strong> ${cons.cheese}</p>
+                <p><strong>Pepperoni:</strong> ${cons.pepperoni}</p>
+                <p class="cost">Estimated Cost: $${cons.totalCost}</p>
+            `;
+
+            document.getElementById('genOutput').innerHTML = `
+                <p><strong>Attendees:</strong> ${adults} adults/teens + ${kids} kids</p>
+                <p><strong>Total slices needed:</strong> ${genSlices.toFixed(1)}</p>
+                <p><strong>Pizzas before buffer:</strong> ${gen.basePizzas}</p>
+                <div class="total">Order ${gen.totalPizzas} large pizzas</div>
+                <p><strong>Plain Cheese:</strong> ${gen.cheese}</p>
+                <p><strong>Pepperoni:</strong> ${gen.pepperoni}</p>
+                <p class="cost">Estimated Cost: $${gen.totalCost}</p>
+            `;
+        }
+
+        function resetForm() {
+            document.getElementById('adults').value = 34;
+            document.getElementById('kids').value = 16;
+            document.getElementById('kidSlices').value = 1.75;
+            document.getElementById('kidSlicesValue').textContent = '1.75';
+            document.getElementById('slicesPerPizza').value = 8;
+            document.getElementById('ratio').value = 60;
+            document.getElementById('ratioValue').textContent = '60';
+            document.getElementById('costPerPizza').value = 6.50;
+            calculate();
+        }
+
+        window.onload = calculate;
+    </script>
+</body>
+</html>
