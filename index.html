@@ -3,53 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pizza Order Calculator</title>
+    <title>The Pearl Project – Pizza Order Calculator</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
-        body { font-family: system-ui, sans-serif; max-width: 950px; margin: 20px auto; padding: 15px; background: #f8f9fa; }
-        h1 { text-align: center; color: #d32f2f; }
-        .container { display: flex; flex-wrap: wrap; gap: 20px; }
-        .input-panel { flex: 1; min-width: 320px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .result-panel { flex: 1; min-width: 320px; }
-        .results { display: flex; gap: 15px; flex-wrap: wrap; }
-        .card { flex: 1; min-width: 300px; background: white; padding: 18px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        label { display: block; margin: 12px 0 6px; font-weight: 600; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1.1em; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 15px;
+            background: #f8f9fa;
+            color: #222;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        header img.logo {
+            height: 70px;
+            width: auto;
+            display: block;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: #d32f2f;
+            line-height: 1.2;
+        }
+        header .subtitle {
+            font-size: 0.95rem;
+            color: #666;
+            font-weight: normal;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .input-panel {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .result-panel {
+            flex: 1;
+            min-width: 320px;
+        }
+        .results {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: 600;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1.1em;
+            box-sizing: border-box;
+        }
         .slider-container { margin: 15px 0; }
         output { font-weight: bold; color: #d32f2f; }
-        button { background: #d32f2f; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; margin: 8px 8px 0 0; }
+        button {
+            background: #d32f2f;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 8px 8px 0 0;
+        }
         button:hover { background: #b71c1c; }
         button.reset { background: #666; }
         button.reset:hover { background: #444; }
-        .total { font-size: 1.35em; font-weight: bold; color: #d32f2f; margin: 12px 0; }
-        .cost { color: #2e7d32; font-size: 1.25em; font-weight: bold; }
+        .total {
+            font-size: 1.35em;
+            font-weight: bold;
+            color: #d32f2f;
+            margin: 12px 0;
+        }
+        .cost { color: #2e7d32; font-size: 1.2em; font-weight: bold; }
+        .gf { color: #5d4037; }
+        .section-title {
+            margin-top: 18px;
+            margin-bottom: 4px;
+            font-size: 0.95em;
+            color: #555;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+        /* Stores table */
+        .stores-section {
+            margin-top: 28px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .stores-section h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.25rem;
+        }
+        table.stores {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table.stores th, table.stores td {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        table.stores th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #444;
+        }
+        table.stores tr:last-child td { border-bottom: none; }
+        table.stores a.phone {
+            color: #1565c0;
+            text-decoration: none;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        table.stores a.phone:hover { text-decoration: underline; }
+        @media (max-width: 600px) {
+            header { flex-direction: column; align-items: flex-start; }
+            table.stores th, table.stores td { padding: 8px 6px; font-size: 0.95em; }
+        }
     </style>
 </head>
 <body>
-    <h1>🍕 Pizza Order Calculator</h1>
-    
+    <header>
+        <img src="logo.png" alt="The Pearl Project" class="logo">
+        <div>
+            <h1>Pizza Order Calculator</h1>
+            <div class="subtitle">The Pearl Project</div>
+        </div>
+    </header>
+
     <div class="container">
         <div class="input-panel">
+            <div class="section-title">Attendees</div>
             <label>Adults & Teens</label>
-            <input type="number" id="adults" value="34" min="0">
+            <input type="number" id="adults" min="0">
 
             <label>Kids</label>
-            <input type="number" id="kids" value="16" min="0">
+            <input type="number" id="kids" min="0">
 
             <div class="slider-container">
                 <label>Kid slices per person: <output id="kidSlicesValue">1.75</output></label>
                 <input type="range" id="kidSlices" min="1.5" max="2" step="0.25" value="1.75">
             </div>
 
-            <label>Slices per large (14") pizza</label>
-            <input type="number" id="slicesPerPizza" value="8" min="6" max="12">
+            <div class="section-title">Regular Pizzas (discounted)</div>
+            <label>Slices per large pizza</label>
+            <input type="number" id="slicesPerPizza" min="6" max="12">
 
             <div class="slider-container">
                 <label>Cheese % (rest is Pepperoni): <output id="ratioValue">60</output>%</label>
                 <input type="range" id="ratio" min="0" max="100" value="60" step="5">
             </div>
 
-            <label>Cost per pizza ($)</label>
-            <input type="number" id="costPerPizza" value="9.00" step="0.01" min="0">
+            <label>Cost per regular pizza ($)</label>
+            <input type="number" id="costPerPizza" step="0.01" min="0">
+
+            <div class="section-title">Gluten-Free Pizzas (regular price)</div>
+            <label>Number of gluten-free pizzas</label>
+            <input type="number" id="gfCount" min="0">
+
+            <label>Cost per gluten-free pizza ($)</label>
+            <input type="number" id="gfCost" step="0.01" min="0">
 
             <button onclick="calculate()">Calculate</button>
             <button onclick="resetForm()" class="reset">Reset to Defaults</button>
@@ -57,12 +203,11 @@
 
         <div class="result-panel">
             <div class="results">
-                <div class="card" id="conservative">
+                <div class="card">
                     <h2>Conservative Estimate</h2>
                     <div id="consOutput"></div>
                 </div>
-
-                <div class="card" id="generous">
+                <div class="card">
                     <h2>Generous Estimate (+0.5 slices/kid)</h2>
                     <div id="genOutput"></div>
                 </div>
@@ -70,7 +215,66 @@
         </div>
     </div>
 
+    <!-- Store locations from config.js -->
+    <div class="stores-section" id="storesSection">
+        <h2>Store Locations</h2>
+        <p style="margin:0 0 8px; color:#666; font-size:0.95em;">
+            Tap a phone number on mobile to call the store.
+        </p>
+        <table class="stores" id="storesTable">
+            <thead>
+                <tr>
+                    <th>Store</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody id="storesBody">
+                <!-- filled by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Load defaults & store list from the easy-to-edit config file -->
+    <script src="config.js"></script>
     <script>
+        // Apply defaults from config.js
+        function applyDefaults() {
+            const d = CONFIG.defaults;
+            document.getElementById('adults').value = d.adults;
+            document.getElementById('kids').value = d.kids;
+            document.getElementById('kidSlices').value = d.kidSlices;
+            document.getElementById('kidSlicesValue').textContent = parseFloat(d.kidSlices).toFixed(2);
+            document.getElementById('slicesPerPizza').value = d.slicesPerPizza;
+            document.getElementById('ratio').value = d.cheesePercent;
+            document.getElementById('ratioValue').textContent = d.cheesePercent;
+            document.getElementById('costPerPizza').value = d.costPerRegular.toFixed(2);
+            document.getElementById('gfCount').value = d.gfCount;
+            document.getElementById('gfCost').value = d.costPerGF.toFixed(2);
+        }
+
+        // Build the stores table from config.js
+        function renderStores() {
+            const tbody = document.getElementById('storesBody');
+            tbody.innerHTML = '';
+            if (!CONFIG.stores || CONFIG.stores.length === 0) {
+                document.getElementById('storesSection').style.display = 'none';
+                return;
+            }
+            CONFIG.stores.forEach(store => {
+                const tr = document.createElement('tr');
+                // Clean phone for tel: link (remove non-digits except leading +)
+                const tel = store.phone.replace(/[^\d+]/g, '');
+                tr.innerHTML = `
+                    <td><strong>${store.name}</strong></td>
+                    <td>${store.address}</td>
+                    <td><a class="phone" href="tel:${tel}">${store.phone}</a></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Live slider labels
         document.getElementById('kidSlices').addEventListener('input', function() {
             document.getElementById('kidSlicesValue').textContent = parseFloat(this.value).toFixed(2);
         });
@@ -84,63 +288,74 @@
             const kidSlices = parseFloat(document.getElementById('kidSlices').value);
             const slicesPerPizza = parseFloat(document.getElementById('slicesPerPizza').value) || 8;
             const cheesePercent = parseFloat(document.getElementById('ratio').value) / 100;
-            const costPerPizza = parseFloat(document.getElementById('costPerPizza').value) || 9.00;
+            const costPerPizza = parseFloat(document.getElementById('costPerPizza').value) || 6.50;
+            const gfCount = parseFloat(document.getElementById('gfCount').value) || 0;
+            const gfCost = parseFloat(document.getElementById('gfCost').value) || 12.00;
 
-            if (adults + kids === 0) {
-                alert("Please enter at least some attendees!");
+            if (adults + kids === 0 && gfCount === 0) {
+                alert("Please enter at least some attendees or gluten-free pizzas!");
                 return;
             }
 
             function compute(totalSlices) {
-                let basePizzas = totalSlices / slicesPerPizza;
-                let totalPizzas = Math.ceil(basePizzas) + 1;
-                let cheese = Math.ceil(totalPizzas * cheesePercent);
-                let pepperoni = totalPizzas - cheese;
-                let totalCost = (totalPizzas * costPerPizza).toFixed(2);
-
-                return { totalPizzas, cheese, pepperoni, basePizzas: basePizzas.toFixed(1), totalCost };
+                const basePizzas = totalSlices / slicesPerPizza;
+                const totalRegular = Math.ceil(basePizzas) + 1;  // +1 buffer
+                const cheese = Math.ceil(totalRegular * cheesePercent);
+                const pepperoni = totalRegular - cheese;
+                const regularCost = (totalRegular * costPerPizza).toFixed(2);
+                const gfTotalCost = (gfCount * gfCost).toFixed(2);
+                const grandTotal = (parseFloat(regularCost) + parseFloat(gfTotalCost)).toFixed(2);
+                return { totalRegular, cheese, pepperoni, basePizzas: basePizzas.toFixed(1), regularCost, gfTotalCost, grandTotal };
             }
 
             const consSlices = (adults * 2.5) + (kids * kidSlices);
             const cons = compute(consSlices);
-
             const genSlices = (adults * 2.5) + (kids * (kidSlices + 0.5));
             const gen = compute(genSlices);
+
+            function orderLine(regularCount) {
+                if (gfCount > 0) {
+                    return `Order ${regularCount} regular + ${gfCount} gluten-free pizzas`;
+                }
+                return `Order ${regularCount} regular large pizzas`;
+            }
 
             document.getElementById('consOutput').innerHTML = `
                 <p><strong>Attendees:</strong> ${adults} adults/teens + ${kids} kids</p>
                 <p><strong>Total slices needed:</strong> ${consSlices.toFixed(1)}</p>
                 <p><strong>Pizzas before buffer:</strong> ${cons.basePizzas}</p>
-                <div class="total">Order ${cons.totalPizzas} large pizzas</div>
+                <div class="total">${orderLine(cons.totalRegular)}</div>
                 <p><strong>Plain Cheese:</strong> ${cons.cheese}</p>
                 <p><strong>Pepperoni:</strong> ${cons.pepperoni}</p>
-                <p class="cost">Estimated Cost: $${cons.totalCost}</p>
+                <p class="cost">Regular pizza cost: $${cons.regularCost}</p>
+                <p class="gf"><strong>Gluten-Free:</strong> ${gfCount} × $${gfCost.toFixed(2)} = $${cons.gfTotalCost}</p>
+                <p class="cost" style="font-size:1.3em; margin-top:10px;">Grand Total: $${cons.grandTotal}</p>
             `;
 
             document.getElementById('genOutput').innerHTML = `
                 <p><strong>Attendees:</strong> ${adults} adults/teens + ${kids} kids</p>
                 <p><strong>Total slices needed:</strong> ${genSlices.toFixed(1)}</p>
                 <p><strong>Pizzas before buffer:</strong> ${gen.basePizzas}</p>
-                <div class="total">Order ${gen.totalPizzas} large pizzas</div>
+                <div class="total">${orderLine(gen.totalRegular)}</div>
                 <p><strong>Plain Cheese:</strong> ${gen.cheese}</p>
                 <p><strong>Pepperoni:</strong> ${gen.pepperoni}</p>
-                <p class="cost">Estimated Cost: $${gen.totalCost}</p>
+                <p class="cost">Regular pizza cost: $${gen.regularCost}</p>
+                <p class="gf"><strong>Gluten-Free:</strong> ${gfCount} × $${gfCost.toFixed(2)} = $${gen.gfTotalCost}</p>
+                <p class="cost" style="font-size:1.3em; margin-top:10px;">Grand Total: $${gen.grandTotal}</p>
             `;
         }
 
         function resetForm() {
-            document.getElementById('adults').value = 34;
-            document.getElementById('kids').value = 16;
-            document.getElementById('kidSlices').value = 1.75;
-            document.getElementById('kidSlicesValue').textContent = '1.75';
-            document.getElementById('slicesPerPizza').value = 8;
-            document.getElementById('ratio').value = 60;
-            document.getElementById('ratioValue').textContent = '60';
-            document.getElementById('costPerPizza').value = 9.00;
+            applyDefaults();
             calculate();
         }
 
-        window.onload = calculate;
+        // Startup
+        window.onload = function() {
+            applyDefaults();
+            renderStores();
+            calculate();
+        };
     </script>
 </body>
 </html>
