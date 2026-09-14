@@ -1,6 +1,6 @@
 // ============================================================
 //  PIZZA CALCULATOR - DEFAULTS & STORE LIST
-//  Edit this file to change defaults. No HTML knowledge needed.
+//  Edit this file to change defaults.
 // ============================================================
 
 const CONFIG = {
@@ -10,11 +10,11 @@ const CONFIG = {
     adults: 34,                 // Adults & Teens
     kids: 16,                   // Kids
     kidSlices: 1.75,            // Slices per kid (slider default)
-    slicesPerPizza: 8,          // Slices in a large Papa John's pizza
+    slicesPerPizza: 8,          // Slices in a large (14") Papa John's pizza
     cheesePercent: 60,          // % that should be plain cheese
-    costPerRegular: 6.50,       // Educational / 501c3 discounted price
+    costPerRegular: 9.00,       // Educational / 501c3 discounted price
     gfCount: 0,                 // Number of gluten-free pizzas
-    costPerGF: 12.00            // Regular (non-discounted) price for GF
+    costPerGF: 14.95            // Regular (non-discounted) price for GF
   },
 
   // ----- Store locations (add or remove as many as you like) -----
